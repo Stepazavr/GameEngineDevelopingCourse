@@ -30,6 +30,8 @@ namespace GameEngine
 
 	void Game::ProcessSystemParams()
 	{
+		Core::MainWindowsApplication->UpdateCurrentTime();
+
 		if (m_renderEngine->GetSwapChainWidth() != Core::MainWindowsApplication->GetWidth() ||
 			m_renderEngine->GetSwapChainHeight() != Core::MainWindowsApplication->GetHeight()) [[unlikely]]
 		{

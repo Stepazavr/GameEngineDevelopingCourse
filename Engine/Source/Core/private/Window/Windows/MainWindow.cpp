@@ -24,6 +24,15 @@ namespace GameEngine::Core
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
+	float GetGlobalTime()
+	{
+		LARGE_INTEGER freq, counter;
+		QueryPerformanceFrequency(&freq);
+		QueryPerformanceCounter(&counter);
+
+		return float(counter.QuadPart) / freq.QuadPart;
+	}
+
 	void Window::Init(void* instance)
 	{
 		HINSTANCE hInstance = reinterpret_cast<HINSTANCE>(instance);
@@ -71,6 +80,13 @@ namespace GameEngine::Core
 		ShowWindow(GetPlatformWindowHandle(m_WndHndl), SW_SHOW);
 		UpdateWindow(GetPlatformWindowHandle(m_WndHndl));
 
+		m_StartTime = GetGlobalTime();
+
 		return;
+	}
+
+	void Window::UpdateCurrentTime()
+	{
+		m_CurrentTime = GetGlobalTime() - m_StartTime;
 	}
 }

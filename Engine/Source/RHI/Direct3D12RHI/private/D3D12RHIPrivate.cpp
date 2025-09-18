@@ -253,8 +253,11 @@ namespace GameEngine
 			D3D12Mesh d3d12Mesh = *reinterpret_cast<D3D12Mesh*>(mesh.get());
 			D3D12Material d3d12Material = *reinterpret_cast<D3D12Material*>(material.get());
 
-			float mTheta = 1.5f * DirectX::XM_PI;
-			float mPhi = DirectX::XM_PIDIV4;
+			float currentTime = Core::MainWindowsApplication->GetCurrentTime();
+			float rotationSpeed = DirectX::XM_PIDIV4 * 0.5;
+
+			float mTheta = rotationSpeed * currentTime;
+			float mPhi = 1.5f * DirectX::XM_PIDIV4;
 			float mRadius = 5.0f;
 
 			// Convert Spherical to Cartesian coordinates.

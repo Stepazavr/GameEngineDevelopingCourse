@@ -71,6 +71,48 @@ namespace GameEngine
 			return m_d3d12Private->CreateMesh(vertices.begin(), vertices.size(), sizeof(Vertex), indices.begin(), indices.size(), sizeof(uint16_t));
 		}
 
+		Mesh::Ptr D3D12RHI::CreateOctahedronMesh()
+		{
+			array<Vertex, 6> vertices =
+			{
+				Vertex({ Math::Vector3f(1.0f, 0.0f,  0.0f), Math::Vector4f((float*)&DirectX::Colors::Crimson) }),
+				Vertex({ Math::Vector3f(0.0f, 0.0f,  1.0f), Math::Vector4f((float*)&DirectX::Colors::Snow) }),
+				Vertex({ Math::Vector3f(-1.0f, 0.0f,  0.0f), Math::Vector4f((float*)&DirectX::Colors::RoyalBlue) }),
+				Vertex({ Math::Vector3f(0.0f, 0.0f, -1.0f), Math::Vector4f((float*)&DirectX::Colors::Yellow) }),
+				Vertex({ Math::Vector3f(0.0f,  1.0f, 0.0f), Math::Vector4f((float*)&DirectX::Colors::Cyan) }),
+				Vertex({ Math::Vector3f(0.0f, -1.0f, 0.0f), Math::Vector4f((float*)&DirectX::Colors::Coral) })
+			};
+
+			array<uint16_t, 24> indices =
+			{
+				// the upper half
+				// front
+				4, 0, 3,
+				// right
+				4, 1, 0,
+				// back
+				4, 2, 1,
+				// left
+				4, 3, 2,
+
+				// the lower half
+				// front
+				5, 3, 0,
+				// right
+				5, 0, 1,
+				// back
+				5, 1, 2,
+				// left
+				5, 2, 3
+			};
+
+			return m_d3d12Private->CreateMesh(
+				vertices.begin(), vertices.size(), sizeof(Vertex),
+				indices.begin(), indices.size(), sizeof(uint16_t)
+			);
+		}
+
+
 		Material::Ptr D3D12RHI::GetMaterial(const std::string& name)
 		{
 			return m_d3d12Private->GetMaterial(name);
