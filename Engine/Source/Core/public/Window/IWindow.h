@@ -20,6 +20,8 @@ namespace GameEngine::Core
 		float GetAspectRatio() const { return (float)m_Width / (float)m_Height; }
 		Math::Vector2i GetMousePos() const { return m_MousePos; }
 		void SetMousePos(int x, int y) { m_MousePos.x = x; m_MousePos.y = y; }
+		void SetKeyButton(int newKeyButton) { keyButton = newKeyButton; }
+		int GetKeyButton() const { return keyButton; }
 
 	private:
 		uint32_t m_Width = 800;
@@ -28,6 +30,7 @@ namespace GameEngine::Core
 		void* m_WndHndl = nullptr;
 
 		Math::Vector2i m_MousePos;
+		int keyButton = 'Y';
 	};
 
 	extern CORE_API Window* g_MainWindowsApplication;

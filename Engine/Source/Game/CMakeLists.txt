@@ -44,6 +44,7 @@ target_sources(Game
 target_include_directories(Game 
 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public
 	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/private
+	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../External/inih/include
 )
 
 target_link_libraries(Game PRIVATE
@@ -51,6 +52,7 @@ target_link_libraries(Game PRIVATE
 	RenderCore
 	Core
 	RenderEngine
+	inih
 )
 
 target_precompile_headers(Game

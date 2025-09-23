@@ -12,10 +12,12 @@ add_compile_definitions(
   $<$<CONFIG:Release>:RELEASE>
 )
 
-project(GameEngine LANGUAGES CXX)
+project(inih LANGUAGES CXX C)
 
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/localBuild/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/localBuild/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/localBuild/bin)
-
-add_subdirectory(Engine)
+add_library(inih STATIC
+	src/ini.c
+	src/INIReader.cpp
+	include/ini.h
+	include/INIReader.h
+)
+target_include_directories(inih PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

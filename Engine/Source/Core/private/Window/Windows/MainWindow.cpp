@@ -36,7 +36,7 @@ namespace GameEngine::Core
 			OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), g_MainCamera, g_MainWindowsApplication);
 			return 0;
 		case WM_KEYDOWN:
-			if (wParam == 'Q') {
+			if (wParam == g_MainWindowsApplication->GetKeyButton()) {
 				const int newWidth = 1280;
 				const int newHeight = 720;
 

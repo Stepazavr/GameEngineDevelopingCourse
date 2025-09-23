@@ -2,6 +2,37 @@
 #include <DefaultGeometry.h>
 #include <Game.h>
 #include <GameObject.h>
+#include <string>
+#include <windows.h>
+
+#include "INIReader.h"
+
+namespace {
+
+	int getKeyCode(const std::string& key) {
+		if (key.size() == 1 && std::isalpha(key[0])) {
+			return std::toupper(key[0]);
+		}
+		if (key == "SPACE") return VK_SPACE;
+		if (key == "ESC")   return VK_ESCAPE;
+
+		return 0;
+	}
+
+	void LoadConfig()
+	{
+		INIReader reader("../../../../../Configs/config.ini");
+
+		if (reader.ParseError() < 0) {
+			return;
+		}
+		std::string keyStr = reader.Get("controls", "key_button", "A");
+
+		if (getKeyCode(keyStr)) {
+			GameEngine::Core::g_MainWindowsApplication->SetKeyButton(getKeyCode(keyStr));
+		}
+	}
+}
 
 namespace GameEngine
 {
@@ -23,6 +54,8 @@ namespace GameEngine
 			Render::RenderObject** renderObject = m_Objects.back()->GetRenderObjectRef();
 			m_renderThread->EnqueueCommand(Render::ERC::CreateRenderObject, RenderCore::DefaultGeometry::Cube(), renderObject);
 		}
+
+		LoadConfig();
 	}
 
 	void Game::Run()
