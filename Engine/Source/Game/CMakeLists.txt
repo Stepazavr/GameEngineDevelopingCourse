@@ -2,6 +2,7 @@
 file(GLOB
 	PRIVATE_FILES
 	private/*.cpp
+	private/*.c
 	private/*.h
 )
 file(GLOB
@@ -52,7 +53,6 @@ target_link_libraries(Game PRIVATE
 	RenderCore
 	Core
 	RenderEngine
-	inih
 )
 
 target_precompile_headers(Game
