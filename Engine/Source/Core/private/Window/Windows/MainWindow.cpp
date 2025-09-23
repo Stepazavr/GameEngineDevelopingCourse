@@ -35,6 +35,16 @@ namespace GameEngine::Core
 		case WM_MOUSEMOVE:
 			OnMouseMove(wParam, GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), g_MainCamera, g_MainWindowsApplication);
 			return 0;
+		case WM_KEYDOWN:
+			if (wParam == 'Q') {
+				const int newWidth = 1280;
+				const int newHeight = 720;
+
+				SetWindowPos(hwnd, nullptr, 0, 0, newWidth, newHeight, SWP_NOZORDER);
+
+				g_MainWindowsApplication->Resize(newWidth, newHeight);
+			}
+			return 0;
 		}
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
