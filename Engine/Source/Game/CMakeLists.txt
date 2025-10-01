@@ -2,7 +2,6 @@
 file(GLOB
 	PRIVATE_FILES
 	private/*.cpp
-	private/*.c
 	private/*.h
 )
 file(GLOB
