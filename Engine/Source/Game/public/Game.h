@@ -20,6 +20,7 @@ namespace GameEngine
 	public:
 		void Run();
 		void Update(float dt);
+		void MoveObjects(Math::Vector3f dir);
 
 	private:
 		// The main idea behind having this functor is to abstract the common code from the platfrom-specific code

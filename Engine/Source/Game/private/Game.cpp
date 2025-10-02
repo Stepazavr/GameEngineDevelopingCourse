@@ -3,6 +3,9 @@
 #include <Game.h>
 #include <GameObject.h>
 #include <Input/InputHandler.h>
+#include <MathHelper.h>
+
+#include <cstdlib>
 
 namespace GameEngine
 {
@@ -17,18 +20,46 @@ namespace GameEngine
 
 		m_renderThread = std::make_unique<Render::RenderThread>();
 
+		m_GameTimer.Reset();
+		srand(static_cast<unsigned int>(m_GameTimer.GetBeginTime()));
+
 		// How many objects do we want to create
-		for (int i = 0; i < 3; ++i)
-		{
-			m_Objects.push_back(new GameObject());
-			Render::RenderObject** renderObject = m_Objects.back()->GetRenderObjectRef();
-			m_renderThread->EnqueueCommand(Render::ERC::CreateRenderObject, RenderCore::DefaultGeometry::Cube(), renderObject);
+		Math::Vector3f startPos = Math::Vector3f(-10.0f, 0.0f, -10.0f);
+		Math::Vector3f startVelObj = Math::Vector3f::Zero();
+		float margin = 5.0f;
+		Math::Vector3f startPosObj = startPos;
+
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				startPosObj = startPos + Math::Vector3f(margin * i, 0.0f, margin * j);
+
+				int randomType = rand() % 3;
+				ObjectType type = ObjectType::Unknown;
+				switch (randomType) {
+					case 0: 
+						type = ObjectType::Jumping; 
+						startVelObj = Math::Vector3f(0.0f, 10.0f, 0.0f);
+						break;
+					case 1: 
+						type = ObjectType::Moving;
+						startVelObj = Math::Vector3f(0.0f, 0.0f, 10.0f);
+						break;
+					case 2: type = ObjectType::Ñontrolled;
+						startVelObj = Math::Vector3f::Zero();
+						break;
+				}
+				m_Objects.push_back(new GameObject(type, startPosObj, startVelObj));
+				Render::RenderObject** renderObject = m_Objects.back()->GetRenderObjectRef();
+				m_renderThread->EnqueueCommand(Render::ERC::CreateRenderObject, RenderCore::DefaultGeometry::Cube(), renderObject);
+			}
 		}
 
-		Core::g_InputHandler->RegisterCallback("GoForward", [&]() { Core::g_MainCamera->Move(Core::g_MainCamera->GetViewDir()); });
-		Core::g_InputHandler->RegisterCallback("GoBack", [&]() { Core::g_MainCamera->Move(-Core::g_MainCamera->GetViewDir()); });
-		Core::g_InputHandler->RegisterCallback("GoRight", [&]() { Core::g_MainCamera->Move(Core::g_MainCamera->GetRightDir()); });
-		Core::g_InputHandler->RegisterCallback("GoLeft", [&]() { Core::g_MainCamera->Move(-Core::g_MainCamera->GetRightDir()); });
+		Core::g_InputHandler->RegisterCallback("GoForwardCam", [&]() { Core::g_MainCamera->Move(Core::g_MainCamera->GetViewDir()); });
+		Core::g_InputHandler->RegisterCallback("GoBackCam", [&]() { Core::g_MainCamera->Move(-Core::g_MainCamera->GetViewDir()); });
+		Core::g_InputHandler->RegisterCallback("GoRightCam", [&]() { Core::g_MainCamera->Move(Core::g_MainCamera->GetRightDir()); });
+		Core::g_InputHandler->RegisterCallback("GoLeftCam", [&]() { Core::g_MainCamera->Move(-Core::g_MainCamera->GetRightDir()); });
+		Core::g_InputHandler->RegisterCallback("GoRightObject", [&]() { MoveObjects(Math::Vector3f(1.0f, 0.0f, 0.0f)); });
+		Core::g_InputHandler->RegisterCallback("GoLeftObject", [&]() { MoveObjects(Math::Vector3f(-1.0f, 0.0f, 0.0f)); });
 	}
 
 	void Game::Run()
@@ -58,25 +89,51 @@ namespace GameEngine
 
 	void Game::Update(float dt)
 	{
-		for (int i = 0; i < m_Objects.size(); ++i)
-		{
-			Math::Vector3f pos = m_Objects[i]->GetPosition();
+		for (GameObject* gameObject : m_Objects) {
+
+			Math::Vector3f pos = gameObject->GetPosition();
+			Math::Vector3f vel = gameObject->GetVelosity();
+
 
 			// Showcase
-			if (i == 0)
+			switch (gameObject->GetType()) {
+			case ObjectType::Ñontrolled:
 			{
-				pos.x += 0.5f * dt;
+				float speed = 10.0f;
+				pos = pos + gameObject->GetMoveDir().Normalized() * speed * dt;
+				gameObject->SetMoveDir(Math::Vector3f::Zero());
+				break;
 			}
-			else if (i == 1)
+			case ObjectType::Jumping:
 			{
-				pos.y -= 0.5f * dt;
+				float g = 10.0f;
+				vel.y -= g * dt;
+				pos.y += vel.y * dt;
+				if (pos.y <= 0.0f) {
+					pos.y = gameObject->GetStartPosition().y;
+					vel.y = gameObject->GetStartVelosity().y;
+				}
+				break;
 			}
-			else if (i == 2)
+			case ObjectType::Moving:
 			{
-				pos.x += 0.5f * dt;
-				pos.y -= 0.5f * dt;
+				float omega2 = 1.0f;
+				float acceleration = -omega2 * (pos.z - gameObject->GetStartPosition().z);
+				vel.z += acceleration * dt;
+				pos.z += vel.z * dt;
+				break;
 			}
-			m_Objects[i]->SetPosition(pos, m_renderThread->GetMainFrame());
+			}
+			gameObject->SetPosition(pos, m_renderThread->GetMainFrame());
+			gameObject->SetVelosity(vel);
+		}
+	}
+
+	void Game::MoveObjects(Math::Vector3f dir) {
+		for (GameObject* gameObject : m_Objects) {
+			if (gameObject->GetType() == ObjectType::Ñontrolled) {
+				gameObject->Move(dir);
+			}
 		}
 	}
 }

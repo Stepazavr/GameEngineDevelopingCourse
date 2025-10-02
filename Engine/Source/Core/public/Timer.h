@@ -19,6 +19,7 @@ namespace GameEngine
 			void Reset();
 			float GetDeltaTime() const;
 			float GetTotalTime() const;
+			float GetBeginTime() const;
 
 		private:
 			bool m_bIsStopped = false;

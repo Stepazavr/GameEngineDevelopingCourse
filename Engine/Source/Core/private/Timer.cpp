@@ -52,4 +52,11 @@ namespace GameEngine::Core
 
 		return totalTime.count();
 	}
+
+	float Timer::GetBeginTime() const
+	{
+		const std::chrono::duration<float, std::ratio<1, 1>> beginTime = m_BeginTimePoint.time_since_epoch();
+
+		return beginTime.count();
+	}
 }
