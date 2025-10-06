@@ -31,4 +31,6 @@ public:
 
 private:
 	flecs::world m_World;
+	flecs::entity m_PatronageSistemEntity;
+	flecs::entity m_Disappearing—ubeEntity;
 };

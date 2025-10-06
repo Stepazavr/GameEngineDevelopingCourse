@@ -55,12 +55,7 @@ namespace GameEngine::Core
 			}
 			return 0;
 		case WM_LBUTTONUP:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONUP:
-			if (g_MainWindowsApplication->IsFocused()) [[likely]]
-			{
-				InputHandler::GetInstance()->KeyReleased(MKToMouseButton(wParam));
-			}
+			InputHandler::GetInstance()->KeyReleased(MouseButton::LMB);
 			return 0;
 		case WM_SETFOCUS:
 			g_MainWindowsApplication->Focus();
