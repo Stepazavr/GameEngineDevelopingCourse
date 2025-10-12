@@ -99,7 +99,7 @@ void GameFramework::Update(float dt)
 			.set(TriggerTimer{ .isActive = false, .value = 5.0f})
 			.set(Alive{ true })
 			.set(TargetEntity{ cubeControl.id() });
-		//cubeControl.id()
+
 		m_PatronageSistemEntity.set<CreateEntity>(
 			{ false, m_PatronageSistemEntity.get<CreateEntity>()->canCreate }
 		);
