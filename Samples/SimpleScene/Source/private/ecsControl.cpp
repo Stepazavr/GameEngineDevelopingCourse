@@ -2,12 +2,15 @@
 #include <ecsControl.h>
 #include <ECS/ecsSystems.h>
 #include <ecsPhys.h>
+#include <ecsLogic.h>
 #include <flecs.h>
 #include <Input/Controller.h>
 #include <Input/InputHandler.h>
 #include <Vector.h>
 
 using namespace GameEngine;
+
+using Vector3f = GameEngine::Math::Vector3f;
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
@@ -49,5 +52,22 @@ void RegisterEcsControlSystems(flecs::world& world)
 			}
 		}
 	});
+
+
+	world.system<const ControllerPtr, CreateEntity>()
+		.each([&](const ControllerPtr& controller, CreateEntity& createEntity) {
+
+		if (controller.ptr->IsPressed("Shot") && createEntity.canCreate) {
+			createEntity.create = true;
+		}
+
+		if (controller.ptr->IsPressed("Shot")) {
+			createEntity.canCreate = false;
+		}
+		else {
+			createEntity.canCreate = true;
+		}
+	});
+
 }
 
