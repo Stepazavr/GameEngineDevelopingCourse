@@ -7,7 +7,6 @@
 #include <Input/Controller.h>
 #include <Input/InputHandler.h>
 #include <Vector.h>
-#include <functional>
 
 using namespace GameEngine;
 
