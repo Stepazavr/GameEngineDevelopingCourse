@@ -1,6 +1,4 @@
 #include <CameraManager.h>
-#include <cassert>
-#include <iterator>
 
 namespace GameEngine::Core
 {

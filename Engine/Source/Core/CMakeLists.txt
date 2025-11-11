@@ -110,4 +110,5 @@ target_precompile_headers(Core
 		<tuple>
 		<list>
 		<memory>
+		<iterator>
 )
