@@ -4,14 +4,14 @@
 
 namespace GameEngine::Core
 {
-	class Camera;
+	class CameraManager;
 }
 
 namespace GameEngine::EntitySystem::EditorECS
 {
-	struct CameraPtr
+	struct CameraManagerPtr
 	{
-		Core::Camera* ptr;
+		Core::CameraManager* ptr;
 	};
 
 	struct Position

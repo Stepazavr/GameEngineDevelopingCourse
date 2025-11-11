@@ -2,7 +2,7 @@
 
 namespace GameEngine::Core
 {
-	Camera* g_MainCamera = nullptr;
+	//Camera* g_MainCamera = nullptr;
 
 	Math::Matrix4x4f Camera::GetViewMatrix()
 	{

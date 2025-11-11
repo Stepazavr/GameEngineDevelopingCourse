@@ -1,4 +1,4 @@
-#include <Camera.h>
+#include <CameraManager.h>
 #include <ecsControl.h>
 #include <Constants.h>
 #include <ECS/ecsSystems.h>
@@ -12,37 +12,54 @@ using namespace GameEngine;
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<Position, CameraPtr, const Speed, const ControllerPtr>()
-		.each([&](flecs::entity e, Position& position, CameraPtr& camera, const Speed& speed, const ControllerPtr& controller)
+	world.system<CameraManagerPtr, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, const ControllerPtr& controller)
 	{
 		Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
 
 		mouseMovement.dx *= 0.25 * Math::Constants::PI / 180.f;
 		mouseMovement.dy *= 0.25 * Math::Constants::PI / 180.f;
 
-		camera.ptr->Rotate(mouseMovement.dx, mouseMovement.dy);
+		Core::Camera* camera = cameraManager.ptr->GetCamera();
+
+		camera->Rotate(mouseMovement.dx, mouseMovement.dy);
 
 		Math::Vector3f currentMoveDir = Math::Vector3f::Zero();
 		if (controller.ptr->IsPressed("GoLeft"))
 		{
-			currentMoveDir = currentMoveDir - camera.ptr->GetRightDir();
+			currentMoveDir = currentMoveDir - camera->GetRightDir();
 		}
 		if (controller.ptr->IsPressed("GoRight"))
 		{
-			currentMoveDir = currentMoveDir + camera.ptr->GetRightDir();
+			currentMoveDir = currentMoveDir + camera->GetRightDir();
 		}
 		if (controller.ptr->IsPressed("GoBack"))
 		{
-			currentMoveDir = currentMoveDir - camera.ptr->GetViewDir();
+			currentMoveDir = currentMoveDir - camera->GetViewDir();
 		}
 		if (controller.ptr->IsPressed("GoForward"))
 		{
-			currentMoveDir = currentMoveDir + camera.ptr->GetViewDir();
+			currentMoveDir = currentMoveDir + camera->GetViewDir();
 		}
-		position.x = position.x + currentMoveDir.Normalized().x * speed.value * world.delta_time();
-		position.y = position.y + currentMoveDir.Normalized().y * speed.value * world.delta_time();
-		position.z = position.z + currentMoveDir.Normalized().z * speed.value * world.delta_time();
-		camera.ptr->SetPosition(Math::Vector3f(position.x, position.y, position.z));
+		float speed = 10.0f;
+		Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
+		camera->SetPosition(position);
+
+		if (controller.ptr->IsPressed("CreateCamera"))
+		{
+			cameraManager.ptr->CreateCamera();
+			ecs_sleepf(1.0);
+		}
+		else if (controller.ptr->IsPressed("NextCamera"))
+		{
+			cameraManager.ptr->SwitchNextCamera();
+			ecs_sleepf(1.0);
+		}
+		else if (controller.ptr->IsPressed("PrevCamera"))
+		{
+			cameraManager.ptr->SwitchPrevCamera();
+			ecs_sleepf(1.0);
+		}
 	});
 
 	world.system<const Position, Velocity, const ControllerPtr, const BouncePlane, const JumpSpeed>()

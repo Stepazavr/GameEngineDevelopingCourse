@@ -1,4 +1,4 @@
-#include <Camera.h>
+#include <CameraManager.h>
 #include <DefaultGeometry.h>
 #include <ecsControl.h>
 #include <ecsMesh.h>
@@ -21,10 +21,8 @@ void GameFramework::Init()
 		Core::g_FileSystem->GetFilePath("Levels/Main.xml").generic_string()
 	);
 
-	flecs::entity camera = m_World.entity()
-		.set(Position{ 0.0f, 12.0f, -10.0f })
-		.set(Speed{ 10.f })
-		.set(CameraPtr{ Core::g_MainCamera })
+	flecs::entity cameraManager = m_World.entity()
+		.set(CameraManagerPtr{ Core::g_CameraManager })
 		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
 }
 

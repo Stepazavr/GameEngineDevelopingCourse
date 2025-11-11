@@ -4,7 +4,7 @@
 
 namespace GameEngine::Core
 {
-	class Camera;
+	class CameraManager;
 	class Controller;
 }
 
@@ -18,9 +18,9 @@ struct JumpSpeed
 	float value;
 };
 
-struct CameraPtr
+struct CameraManagerPtr
 {
-	GameEngine::Core::Camera* ptr;
+	GameEngine::Core::CameraManager* ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);
