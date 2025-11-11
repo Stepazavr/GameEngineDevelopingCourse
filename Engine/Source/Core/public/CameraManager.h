@@ -29,6 +29,9 @@ namespace GameEngine
 		private:
 			CameraList m_CameraList;
 			CameraList::iterator m_CurrCameraIt;
+
+			inline static Math::Vector3f startCameraPosition = Math::Vector3f(0.0f, 12.0f, -10.0f);
+			inline static Math::Vector3f startCameraViewDir = Math::Vector3f(0.0f, -6.0f, 12.0f);
 		};
 
 		extern CORE_API CameraManager* g_CameraManager;

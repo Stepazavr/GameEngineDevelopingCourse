@@ -7,8 +7,8 @@ namespace GameEngine::Core
 	Camera::Ptr CameraManager::CreateCamera()
 	{
 		auto newCamera = std::make_shared<Camera>();
-		newCamera->SetPosition(Math::Vector3f(0.0f, 12.0f, -10.0f));
-		newCamera->SetViewDir(Math::Vector3f(0.0f, -6.0f, 12.0f));
+		newCamera->SetPosition(startCameraPosition);
+		newCamera->SetViewDir(startCameraViewDir);
 
 		AddCamera(newCamera);
 		return newCamera;
