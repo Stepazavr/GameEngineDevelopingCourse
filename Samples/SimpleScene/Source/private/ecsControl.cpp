@@ -7,13 +7,34 @@
 #include <Input/Controller.h>
 #include <Input/InputHandler.h>
 #include <Vector.h>
+#include <functional>
 
 using namespace GameEngine;
 
+
+static void ProcessButtonPress(const ControllerPtr& controller,
+                               const char* actionName,
+                               const std::function<void()>& action,
+                               bool& wasPressedFlag)
+{
+    if (controller.ptr->IsPressed(actionName))
+    {
+        if (!wasPressedFlag)
+        {
+            action();
+            wasPressedFlag = true;
+        }
+    }
+    else
+    {
+        wasPressedFlag = false;
+    }
+}
+
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<CameraManagerPtr, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, const ControllerPtr& controller)
+	world.system<CameraManagerPtr, ButtonManager, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, ButtonManager& buttonManager, const ControllerPtr& controller)
 	{
 		Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
 
@@ -45,21 +66,20 @@ void RegisterEcsControlSystems(flecs::world& world)
 		Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
 		camera->SetPosition(position);
 
-		if (controller.ptr->IsPressed("CreateCamera"))
-		{
-			cameraManager.ptr->CreateCamera();
-			ecs_sleepf(1.0);
-		}
-		else if (controller.ptr->IsPressed("NextCamera"))
-		{
-			cameraManager.ptr->SwitchNextCamera();
-			ecs_sleepf(1.0);
-		}
-		else if (controller.ptr->IsPressed("PrevCamera"))
-		{
-			cameraManager.ptr->SwitchPrevCamera();
-			ecs_sleepf(1.0);
-		}
+		ProcessButtonPress(controller, "CreateCamera",
+						  [&]() { cameraManager.ptr->CreateCamera(); },
+						  buttonManager.wasPressedCreateCameraButton
+						  );
+
+		ProcessButtonPress(controller, "NextCamera",
+						   [&]() { cameraManager.ptr->SwitchNextCamera(); },
+						   buttonManager.wasPressedNextCameraButton
+						   );
+
+		ProcessButtonPress(controller, "PrevCamera",
+						   [&]() { cameraManager.ptr->SwitchPrevCamera(); },
+						   buttonManager.wasPressedPrevCameraButton
+						   );
 	});
 
 	world.system<const Position, Velocity, const ControllerPtr, const BouncePlane, const JumpSpeed>()

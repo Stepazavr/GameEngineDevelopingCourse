@@ -23,6 +23,7 @@ void GameFramework::Init()
 
 	flecs::entity cameraManager = m_World.entity()
 		.set(CameraManagerPtr{ Core::g_CameraManager })
+		.set(ButtonManager{ false, false, false })
 		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
 }
 

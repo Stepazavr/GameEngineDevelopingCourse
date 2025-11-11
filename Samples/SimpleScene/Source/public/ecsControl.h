@@ -13,6 +13,13 @@ struct ControllerPtr
 	GameEngine::Core::Controller* ptr;
 };
 
+struct ButtonManager
+{
+	bool wasPressedCreateCameraButton;
+	bool wasPressedNextCameraButton;
+	bool wasPressedPrevCameraButton;
+};
+
 struct JumpSpeed
 {
 	float value;

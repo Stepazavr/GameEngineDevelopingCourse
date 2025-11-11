@@ -4,8 +4,6 @@
 #include <Matrix.h>
 #include <Vector.h>
 #include <Camera.h>
-#include <list>
-#include <memory>
 
 namespace GameEngine
 {
