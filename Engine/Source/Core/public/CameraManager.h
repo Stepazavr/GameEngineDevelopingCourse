@@ -5,6 +5,7 @@
 #include <Vector.h>
 #include <Camera.h>
 #include <list>
+#include <memory>
 
 namespace GameEngine
 {
@@ -13,20 +14,19 @@ namespace GameEngine
 		class CORE_API CameraManager final
 		{
 		public:
-			using CameraList = std::list<Camera*>;
+			using CameraList = std::list<Camera::Ptr>;
 
 			CameraManager()
 				: m_CurrCameraIt(m_CameraList.end())
 			{}
 
-
-			void CreateCamera();
-			Camera* GetCamera();
+			Camera::Ptr CreateCamera();
+			Camera::Ptr GetActiveCamera();
 			void SwitchNextCamera();
 			void SwitchPrevCamera();
 
 		private:
-			void AddCamera(Camera* camera);
+			void AddCamera(Camera::Ptr camera);
 
 		private:
 			CameraList m_CameraList;

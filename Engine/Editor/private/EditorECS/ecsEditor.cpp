@@ -38,9 +38,9 @@ namespace GameEngine::EntitySystem::EditorECS
 					mouseMovement.dx *= 0.25 * (Math::Constants::PI / 180.f);
 					mouseMovement.dy *= 0.25 * (Math::Constants::PI / 180.f);
 
-					Core::Camera* camera = cameraManager.ptr->GetCamera();
+					Core::Camera::Ptr camera = cameraManager.ptr->GetActiveCamera();
 
-					cameraManager.ptr->GetCamera()->Rotate(mouseMovement.dx, mouseMovement.dy);
+					camera->Rotate(mouseMovement.dx, mouseMovement.dy);
 
 					Math::Vector3f currentMoveDir = Math::Vector3f::Zero();
 					if (Core::InputHandler::GetInstance()->IsKeyPressed(Core::KeyboardButton::A))

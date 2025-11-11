@@ -11,6 +11,8 @@ namespace GameEngine
 		class CORE_API Camera final
 		{
 		public:
+			using Ptr = std::shared_ptr<Camera>;
+
 			Camera() = default;
 
 		public:

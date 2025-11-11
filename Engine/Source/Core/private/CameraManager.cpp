@@ -6,16 +6,17 @@ namespace GameEngine::Core
 {
 	CameraManager* g_CameraManager = nullptr;
 
-	void CameraManager::CreateCamera()
+	Camera::Ptr CameraManager::CreateCamera()
 	{
-		Camera* newCamera = new Core::Camera();
+		auto newCamera = std::make_shared<Camera>();
 		newCamera->SetPosition(Math::Vector3f(0.0f, 12.0f, -10.0f));
 		newCamera->SetViewDir(Math::Vector3f(0.0f, -6.0f, 12.0f));
 
 		AddCamera(newCamera);
+		return newCamera;
 	}
 
-	void CameraManager::AddCamera(Camera* camera)
+	void CameraManager::AddCamera(Camera::Ptr camera)
 	{
 		if (m_CameraList.empty())
 		{
@@ -34,7 +35,7 @@ namespace GameEngine::Core
 		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), camera);
 	}
 
-	Camera* CameraManager::GetCamera()
+	Camera::Ptr CameraManager::GetActiveCamera()
 	{
 		assert(m_CurrCameraIt != m_CameraList.end());
 		return *m_CurrCameraIt;

@@ -169,7 +169,7 @@ namespace GameEngine::Render
 			assert(materialID != RenderObject::k_invalidMaterialID);
 
 			// Projection and view matrices should be a part of Camera class
-			Math::Matrix4x4f view = Core::g_CameraManager->GetCamera()->GetViewMatrix();
+			Math::Matrix4x4f view = Core::g_CameraManager->GetActiveCamera()->GetViewMatrix();
 			Math::Matrix4x4f proj = Math::ProjectionMatrixLH(0.25f * Math::Constants::PI, Core::g_MainWindowsApplication->GetAspectRatio(), 1.0f, 1000.0f);
 
 			Math::Vector3f position = renderObject->GetPosition(frame);
