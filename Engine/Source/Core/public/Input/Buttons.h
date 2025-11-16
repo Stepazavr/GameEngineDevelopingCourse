@@ -15,6 +15,8 @@ namespace GameEngine
 			Q,
 			E,
 			C,
+			T,
+			R,
 			UP,
 			DOWN,
 			LEFT,

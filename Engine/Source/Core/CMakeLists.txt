@@ -111,4 +111,5 @@ target_precompile_headers(Core
 		<list>
 		<memory>
 		<iterator>
+		<algorithm>
 )

@@ -18,6 +18,8 @@ struct ButtonManager
 	bool wasPressedCreateCameraButton;
 	bool wasPressedNextCameraButton;
 	bool wasPressedPrevCameraButton;
+	bool wasPressedSaveCameraButton;
+	bool wasPressedLoadCameraButton;
 };
 
 struct JumpSpeed
@@ -28,6 +30,11 @@ struct JumpSpeed
 struct CameraManagerPtr
 {
 	GameEngine::Core::CameraManager* ptr;
+};
+
+struct SavedCameraPtr
+{
+	GameEngine::Core::Camera::Ptr ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);

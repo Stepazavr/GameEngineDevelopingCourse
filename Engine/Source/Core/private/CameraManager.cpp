@@ -39,6 +39,25 @@ namespace GameEngine::Core
 		return *m_CurrCameraIt;
 	}
 
+	void CameraManager::SetActiveCamera(Camera::Ptr camera)
+	{
+		if (!camera)
+		{
+			return;
+		}
+
+		CameraList::iterator newCameraIt = std::find_if(
+			m_CameraList.begin(), 
+			m_CameraList.end(), 
+			[&](const Camera::Ptr& p) { return p == camera; }
+		);
+
+		if (newCameraIt != m_CameraList.end())
+		{
+			m_CurrCameraIt = newCameraIt;
+		}
+	}
+
 	void CameraManager::SwitchNextCamera()
 	{
 		if (m_CameraList.empty())

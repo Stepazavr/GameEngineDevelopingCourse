@@ -32,8 +32,8 @@ static void ProcessButtonPress(const ControllerPtr& controller,
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<CameraManagerPtr, ButtonManager, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, ButtonManager& buttonManager, const ControllerPtr& controller)
+	world.system<CameraManagerPtr, SavedCameraPtr, ButtonManager, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, SavedCameraPtr& savedCameraPtr, ButtonManager& buttonManager, const ControllerPtr& controller)
 	{
 		Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
 
@@ -66,18 +66,24 @@ void RegisterEcsControlSystems(flecs::world& world)
 		camera->SetPosition(position);
 
 		ProcessButtonPress(controller, "CreateCamera",
-						  [&]() { cameraManager.ptr->CreateCamera(); },
-						  buttonManager.wasPressedCreateCameraButton
-						  );
-
+						   [&]() { cameraManager.ptr->CreateCamera(); },
+						   buttonManager.wasPressedCreateCameraButton
+						   );
 		ProcessButtonPress(controller, "NextCamera",
 						   [&]() { cameraManager.ptr->SwitchNextCamera(); },
 						   buttonManager.wasPressedNextCameraButton
 						   );
-
 		ProcessButtonPress(controller, "PrevCamera",
 						   [&]() { cameraManager.ptr->SwitchPrevCamera(); },
 						   buttonManager.wasPressedPrevCameraButton
+						   );
+		ProcessButtonPress(controller, "SaveCamera",
+						   [&]() { savedCameraPtr.ptr = cameraManager.ptr->GetActiveCamera(); },
+						   buttonManager.wasPressedSaveCameraButton
+						   );
+		ProcessButtonPress(controller, "LoadCamera",
+						   [&]() { cameraManager.ptr->SetActiveCamera(savedCameraPtr.ptr); },
+						   buttonManager.wasPressedLoadCameraButton
 						   );
 	});
 

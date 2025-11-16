@@ -4,6 +4,8 @@
 #include <Matrix.h>
 #include <Vector.h>
 #include <Camera.h>
+#include <list>
+#include <memory>
 
 namespace GameEngine
 {
@@ -22,6 +24,7 @@ namespace GameEngine
             Camera::Ptr GetActiveCamera();
             void SwitchNextCamera();
             void SwitchPrevCamera();
+            void SetActiveCamera(Camera::Ptr camera);
 
         private:
             void AddCamera(Camera::Ptr camera);
