@@ -12,7 +12,7 @@ namespace GameEngine
 	) :
 		PlatformLoop(PlatformLoopFunc)
 	{
-		Core::g_CameraManager = new Core::CameraManager();
+		Core::g_CameraManager = std::make_unique<Core::CameraManager>();
 		Core::g_CameraManager->CreateCamera();
 
 		m_renderThread = std::make_unique<Render::RenderThread>();

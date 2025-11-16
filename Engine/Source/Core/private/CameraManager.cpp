@@ -2,11 +2,11 @@
 
 namespace GameEngine::Core
 {
-	CameraManager* g_CameraManager = nullptr;
+	std::unique_ptr<CameraManager> g_CameraManager = nullptr;
 
 	Camera::Ptr CameraManager::CreateCamera()
 	{
-		auto newCamera = std::make_shared<Camera>();
+		Camera::Ptr newCamera = std::make_shared<Camera>();
 		newCamera->SetPosition(startCameraPosition);
 		newCamera->SetViewDir(startCameraViewDir);
 

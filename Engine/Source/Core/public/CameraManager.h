@@ -7,33 +7,33 @@
 
 namespace GameEngine
 {
-	namespace Core
-	{
-		class CORE_API CameraManager final
-		{
-		public:
-			using CameraList = std::list<Camera::Ptr>;
+    namespace Core
+    {
+        class CORE_API CameraManager final
+        {
+        public:
+            using CameraList = std::list<Camera::Ptr>;
 
-			CameraManager()
-				: m_CurrCameraIt(m_CameraList.end())
-			{}
+            CameraManager()
+                : m_CurrCameraIt(m_CameraList.end())
+            {}
 
-			Camera::Ptr CreateCamera();
-			Camera::Ptr GetActiveCamera();
-			void SwitchNextCamera();
-			void SwitchPrevCamera();
+            Camera::Ptr CreateCamera();
+            Camera::Ptr GetActiveCamera();
+            void SwitchNextCamera();
+            void SwitchPrevCamera();
 
-		private:
-			void AddCamera(Camera::Ptr camera);
+        private:
+            void AddCamera(Camera::Ptr camera);
 
-		private:
-			CameraList m_CameraList;
-			CameraList::iterator m_CurrCameraIt;
+        private:
+            CameraList m_CameraList;
+            CameraList::iterator m_CurrCameraIt;
 
-			inline static Math::Vector3f startCameraPosition = Math::Vector3f(0.0f, 12.0f, -10.0f);
-			inline static Math::Vector3f startCameraViewDir = Math::Vector3f(0.0f, -6.0f, 12.0f);
-		};
+            inline static Math::Vector3f startCameraPosition = Math::Vector3f(0.0f, 12.0f, -10.0f);
+            inline static Math::Vector3f startCameraViewDir = Math::Vector3f(0.0f, -6.0f, 12.0f);
+        };
 
-		extern CORE_API CameraManager* g_CameraManager;
-	}
+        extern CORE_API std::unique_ptr<CameraManager> g_CameraManager;
+    }
 }
