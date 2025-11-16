@@ -41,7 +41,8 @@ namespace GameEngine
 						};
 						for (World::LevelObject::Component& component : levelObject.GetComponents())
 						{
-							if (VECTOR3_COMPONENTS.contains(component.first)) {
+							if (VECTOR3_COMPONENTS.contains(component.first))
+							{
 								Math::Vector3f vec = ParseStringToFloat3(component.second);
 
 								float arrayPos[3] = { vec.x, vec.y, vec.z };
@@ -51,7 +52,8 @@ namespace GameEngine
 									std::to_string(arrayPos[1]) + "," +
 									std::to_string(arrayPos[2]);
 							}
-							else {
+							else 
+							{
 								ImGui::InputText(component.first.c_str(), &component.second);
 							}
 						}
@@ -98,12 +100,16 @@ namespace GameEngine
 			LevelSerializer::Serialize(Core::g_FileSystem->GetFilePath("Levels/Main.xml").generic_string(), m_Level.value());
 		}
 
-		void LevelEditor::AddDefaultObject() {
-			if (!m_Level.has_value()) return;
+		void LevelEditor::AddDefaultObject() 
+		{
+			if (!m_Level.has_value())
+			{
+				return;
+			}
 
 			std::string baseName = "NewObject1";
 			std::string objectName = baseName;
-			int counter = 1;
+			uint16_t counter = 1;
 
 			World::Level::LevelObjectList& objects = m_Level.value().GetLevelObjects();
 			while ( std::ranges::find_if(objects, [&](const World::LevelObject& obj) { return obj.GetName() == objectName; }) != objects.end() ) {
@@ -123,7 +129,8 @@ namespace GameEngine
 			AddLevelEditorEntity(m_Level.value().GetLevelObjects().back());
 		}
 
-		void LevelEditor::AddLevelEditorEntity(World::LevelObject& levelObject) {
+		void LevelEditor::AddLevelEditorEntity(World::LevelObject& levelObject) 
+		{
 			flecs::entity entity = m_World.entity(levelObject.GetName().c_str());
 
 			World::LevelObject::ComponentList& componentList = levelObject.GetComponents();
