@@ -18,7 +18,7 @@ namespace GameEngine
 	) :
 		PlatformLoop(PlatformLoopFunc)
 	{
-		Core::g_CameraManager = new Core::CameraManager();
+		Core::g_CameraManager = std::make_unique<Core::CameraManager>();
 		Core::g_CameraManager->CreateCamera();
 
 		GUI::GUIContext::GetInstance()->PlatformInit();
@@ -31,7 +31,7 @@ namespace GameEngine
 		// huge refactoring requires or flecs custom fix because this api redundancy is just annoying
 
 		flecs::entity cameraManager = m_EntityManager->GetWorld().entity()
-			.set(EntitySystem::EditorECS::CameraManagerPtr{ Core::g_CameraManager });
+			.set(EntitySystem::EditorECS::CameraManagerPtr{ Core::g_CameraManager.get()});
 
 		EntitySystem::EditorECS::RegisterEditorEcsControlSystems(m_EntityManager->GetWorld());
 
