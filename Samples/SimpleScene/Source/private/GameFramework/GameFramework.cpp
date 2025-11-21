@@ -19,7 +19,10 @@ void GameFramework::Init()
 	World::GameWorld::GetInstance()->LoadLevel(
 		m_World,
 		Core::g_FileSystem->GetFilePath("Levels/Main.xml").generic_string()
+		//Core::g_FileSystem->GetFilePath("Levels/FixedCamerasToObjects.xml").generic_string()
 	);
+
+	m_World.set(CameraManagerPtr{ Core::g_CameraManager.get() });
 
 	flecs::entity cameraManager = m_World.entity()
 		.set(CameraManagerPtr{ Core::g_CameraManager.get() })
@@ -70,6 +73,12 @@ void GameFramework::RegisterComponentsReflection()
 
 	m_World.component<JumpSpeed>()
 		.member<float>("value");
+
+	m_World.component<CameraPtr>()
+		.member<float>("dx")
+		.member<float>("dy")
+		.member<float>("dz")
+		.member<uint64_t>("ptr");
 }
 
 void GameFramework::RegisterSystems()

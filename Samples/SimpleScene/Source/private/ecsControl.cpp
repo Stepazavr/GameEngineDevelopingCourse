@@ -89,5 +89,24 @@ void RegisterEcsControlSystems(flecs::world& world)
 			}
 		}
 	});
+
+	world.system<CameraPtr>()
+		.each([&](flecs::entity e, CameraPtr& cameraPtr)
+	{
+				if (!cameraPtr.ptr)
+				{
+					static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
+					cameraPtr.ptr = cameraManagerPtr->ptr->CreateCamera();
+				}
+	});
+
+	world.system<CameraPtr, const Position>()
+		.each([&](CameraPtr& cameraPtr, const Position& pos)
+			{
+				if (cameraPtr.ptr)
+				{
+					cameraPtr.ptr->SetPosition(Math::Vector3f(pos.x + cameraPtr.dx, pos.y + cameraPtr.dy, pos.z + cameraPtr.dz));
+				}
+			});
 }
 

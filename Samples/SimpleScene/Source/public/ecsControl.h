@@ -23,6 +23,14 @@ struct CameraManagerPtr
 	GameEngine::Core::CameraManager* ptr;
 };
 
+struct CameraPtr
+{
+	float dx;
+	float dy;
+	float dz;
+	GameEngine::Core::Camera::Ptr ptr = nullptr;
+};
+
 struct SavedCameraPtr
 {
 	GameEngine::Core::Camera::Ptr ptr;
