@@ -13,15 +13,6 @@ struct ControllerPtr
 	GameEngine::Core::Controller* ptr;
 };
 
-struct ButtonManager
-{
-	bool wasPressedCreateCameraButton;
-	bool wasPressedNextCameraButton;
-	bool wasPressedPrevCameraButton;
-	bool wasPressedSaveCameraButton;
-	bool wasPressedLoadCameraButton;
-};
-
 struct JumpSpeed
 {
 	float value;

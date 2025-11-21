@@ -13,27 +13,22 @@ using namespace GameEngine;
 
 static void ProcessButtonPress(const ControllerPtr& controller,
                                const char* actionName,
-                               const std::function<void()>& action,
-                               bool& wasPressedFlag)
+                               const std::function<void()>& action)
 {
-    if (controller.ptr->IsPressed(actionName))
-    {
-        if (!wasPressedFlag)
-        {
-            action();
-            wasPressedFlag = true;
-        }
-    }
-    else
-    {
-        wasPressedFlag = false;
-    }
+	if (controller.ptr->IsPressed(actionName))
+	{
+		if (!controller.ptr->WasPressed(actionName))
+		{
+			action();
+			controller.ptr->SetWasPressed(actionName);
+		}
+	}
 }
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<CameraManagerPtr, SavedCameraPtr, ButtonManager, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, SavedCameraPtr& savedCameraPtr, ButtonManager& buttonManager, const ControllerPtr& controller)
+	world.system<CameraManagerPtr, SavedCameraPtr, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, SavedCameraPtr& savedCameraPtr, const ControllerPtr& controller)
 	{
 		Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
 
@@ -66,24 +61,19 @@ void RegisterEcsControlSystems(flecs::world& world)
 		camera->SetPosition(position);
 
 		ProcessButtonPress(controller, "CreateCamera",
-						   [&]() { cameraManager.ptr->CreateCamera(); },
-						   buttonManager.wasPressedCreateCameraButton
+						   [&]() { cameraManager.ptr->CreateCamera(); }
 						   );
 		ProcessButtonPress(controller, "NextCamera",
-						   [&]() { cameraManager.ptr->SwitchNextCamera(); },
-						   buttonManager.wasPressedNextCameraButton
+						   [&]() { cameraManager.ptr->SwitchNextCamera(); }
 						   );
 		ProcessButtonPress(controller, "PrevCamera",
-						   [&]() { cameraManager.ptr->SwitchPrevCamera(); },
-						   buttonManager.wasPressedPrevCameraButton
+						   [&]() { cameraManager.ptr->SwitchPrevCamera(); }
 						   );
 		ProcessButtonPress(controller, "SaveCamera",
-						   [&]() { savedCameraPtr.ptr = cameraManager.ptr->GetActiveCamera(); },
-						   buttonManager.wasPressedSaveCameraButton
+						   [&]() { savedCameraPtr.ptr = cameraManager.ptr->GetActiveCamera(); }
 						   );
 		ProcessButtonPress(controller, "LoadCamera",
-						   [&]() { cameraManager.ptr->SetActiveCamera(savedCameraPtr.ptr); },
-						   buttonManager.wasPressedLoadCameraButton
+						   [&]() { cameraManager.ptr->SetActiveCamera(savedCameraPtr.ptr); }
 						   );
 	});
 
