@@ -61,7 +61,9 @@ namespace GameEngine::Core
 	void CameraManager::SwitchNextCamera()
 	{
 		if (m_CameraList.empty())
+		{
 			return;
+		}
 
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
@@ -79,7 +81,9 @@ namespace GameEngine::Core
 	void CameraManager::SwitchPrevCamera()
 	{
 		if (m_CameraList.empty())
+		{
 			return;
+		}
 
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
