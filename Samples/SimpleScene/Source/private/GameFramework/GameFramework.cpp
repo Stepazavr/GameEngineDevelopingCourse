@@ -26,8 +26,11 @@ void GameFramework::Init()
 
 	flecs::entity cameraManager = m_World.entity()
 		.set(CameraManagerPtr{ Core::g_CameraManager.get() })
-		.set(SavedCameraPtr{ nullptr })
+		.set(SavedCameraPtr{})
 		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
+
+	flecs::entity camera = m_World.entity()
+		.set(CameraPtr{ Core::g_CameraManager->CreateCamera() });
 }
 
 void GameFramework::RegisterComponentsReflection()
@@ -74,7 +77,7 @@ void GameFramework::RegisterComponentsReflection()
 	m_World.component<JumpSpeed>()
 		.member<float>("value");
 
-	m_World.component<CameraPtr>()
+	m_World.component<FixedCameraPtr>()
 		.member<float>("dx")
 		.member<float>("dy")
 		.member<float>("dz")

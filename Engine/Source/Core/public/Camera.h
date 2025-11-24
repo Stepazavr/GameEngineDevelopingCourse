@@ -12,6 +12,7 @@ namespace GameEngine
 		{
 		public:
 			using Ptr = std::shared_ptr<Camera>;
+			using WeakPtr = std::weak_ptr<Camera>;
 
 			Camera() = default;
 

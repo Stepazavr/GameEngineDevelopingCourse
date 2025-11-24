@@ -5,6 +5,8 @@
 namespace GameEngine::Core
 {
 	class CameraManager;
+	class Camera;
+
 }
 
 namespace GameEngine::EntitySystem::EditorECS
@@ -12,6 +14,11 @@ namespace GameEngine::EntitySystem::EditorECS
 	struct CameraManagerPtr
 	{
 		Core::CameraManager* ptr;
+	};
+
+	struct CameraPtr
+	{
+		std::shared_ptr<Core::Camera> ptr;
 	};
 
 	struct Position

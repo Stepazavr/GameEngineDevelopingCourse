@@ -19,7 +19,7 @@ namespace GameEngine
 		PlatformLoop(PlatformLoopFunc)
 	{
 		Core::g_CameraManager = std::make_unique<Core::CameraManager>();
-		Core::g_CameraManager->CreateCamera();
+		//Core::g_CameraManager->CreateCamera();
 
 		GUI::GUIContext::GetInstance()->PlatformInit();
 		m_renderThread = std::make_unique<Render::RenderThread>();
@@ -32,6 +32,9 @@ namespace GameEngine
 
 		flecs::entity cameraManager = m_EntityManager->GetWorld().entity()
 			.set(EntitySystem::EditorECS::CameraManagerPtr{ Core::g_CameraManager.get()});
+
+		flecs::entity camera = m_EntityManager->GetWorld().entity()
+			.set(EntitySystem::EditorECS::CameraPtr{ Core::g_CameraManager->CreateCamera() });
 
 		EntitySystem::EditorECS::RegisterEditorEcsControlSystems(m_EntityManager->GetWorld());
 

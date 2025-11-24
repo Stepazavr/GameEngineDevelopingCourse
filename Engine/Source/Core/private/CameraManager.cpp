@@ -25,23 +25,23 @@ namespace GameEngine::Core
 
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
-			m_CameraList.push_back(camera);
+			m_CameraList.push_back(static_cast<Camera::WeakPtr>(camera));
 			m_CurrCameraIt = std::prev(m_CameraList.end());
 			return;
 		}
 
-		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), camera);
+		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), static_cast<Camera::WeakPtr>(camera));
 	}
 
 	Camera::Ptr CameraManager::GetActiveCamera()
 	{
 		assert(m_CurrCameraIt != m_CameraList.end());
-		return *m_CurrCameraIt;
+		return m_CurrCameraIt->lock();
 	}
 
-	void CameraManager::SetActiveCamera(Camera::Ptr camera)
+	void CameraManager::SetActiveCamera(Camera::WeakPtr camera)
 	{
-		if (!camera)
+		if (camera.expired())
 		{
 			return;
 		}
@@ -49,7 +49,7 @@ namespace GameEngine::Core
 		CameraList::iterator newCameraIt = std::find_if(
 			m_CameraList.begin(), 
 			m_CameraList.end(), 
-			[&](const Camera::Ptr& p) { return p == camera; }
+			[&](const Camera::WeakPtr& p) { return p.lock() == camera.lock(); }
 		);
 
 		if (newCameraIt != m_CameraList.end())

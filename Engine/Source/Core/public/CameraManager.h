@@ -12,7 +12,7 @@ namespace GameEngine
         class CORE_API CameraManager final
         {
         public:
-            using CameraList = std::list<Camera::Ptr>;
+            using CameraList = std::list<Camera::WeakPtr>;
 
             CameraManager()
                 : m_CurrCameraIt(m_CameraList.end())
@@ -22,10 +22,11 @@ namespace GameEngine
             Camera::Ptr GetActiveCamera();
             void SwitchNextCamera();
             void SwitchPrevCamera();
-            void SetActiveCamera(Camera::Ptr camera);
+            void SetActiveCamera(Camera::WeakPtr camera);
 
         private:
             void AddCamera(Camera::Ptr camera);
+            //CameraList::iterator FindValidFrom(CameraList::iterator startIt, int direction = 1);
 
         private:
             CameraList m_CameraList;

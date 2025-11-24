@@ -61,7 +61,7 @@ void RegisterEcsControlSystems(flecs::world& world)
 		camera->SetPosition(position);
 
 		ProcessButtonPress(controller, "CreateCamera",
-						   [&]() { cameraManager.ptr->CreateCamera(); }
+			[&]() { world.entity().set(CameraPtr{ cameraManager.ptr->CreateCamera() }); }
 						   );
 		ProcessButtonPress(controller, "NextCamera",
 						   [&]() { cameraManager.ptr->SwitchNextCamera(); }
@@ -90,8 +90,8 @@ void RegisterEcsControlSystems(flecs::world& world)
 		}
 	});
 
-	world.system<CameraPtr>()
-		.each([&](flecs::entity e, CameraPtr& cameraPtr)
+	world.system<FixedCameraPtr>()
+		.each([&](flecs::entity e, FixedCameraPtr& cameraPtr)
 	{
 				if (!cameraPtr.ptr)
 				{
@@ -100,8 +100,8 @@ void RegisterEcsControlSystems(flecs::world& world)
 				}
 	});
 
-	world.system<CameraPtr, const Position>()
-		.each([&](CameraPtr& cameraPtr, const Position& pos)
+	world.system<FixedCameraPtr, const Position>()
+		.each([&](FixedCameraPtr& cameraPtr, const Position& pos)
 			{
 				if (cameraPtr.ptr)
 				{

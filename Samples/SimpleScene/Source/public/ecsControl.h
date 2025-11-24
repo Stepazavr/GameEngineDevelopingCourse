@@ -25,6 +25,12 @@ struct CameraManagerPtr
 
 struct CameraPtr
 {
+	GameEngine::Core::Camera::Ptr ptr = nullptr;
+};
+
+
+struct FixedCameraPtr
+{
 	float dx;
 	float dy;
 	float dz;
@@ -33,7 +39,7 @@ struct CameraPtr
 
 struct SavedCameraPtr
 {
-	GameEngine::Core::Camera::Ptr ptr;
+	GameEngine::Core::Camera::WeakPtr ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);
