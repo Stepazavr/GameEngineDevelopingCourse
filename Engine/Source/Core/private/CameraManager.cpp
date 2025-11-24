@@ -35,6 +35,7 @@ namespace GameEngine::Core
 
 	Camera::Ptr CameraManager::GetActiveCamera()
 	{
+		m_CurrCameraIt = FindValidCamera(m_CurrCameraIt);
 		assert(m_CurrCameraIt != m_CameraList.end());
 		return m_CurrCameraIt->lock();
 	}
@@ -47,9 +48,15 @@ namespace GameEngine::Core
 		}
 
 		CameraList::iterator newCameraIt = std::find_if(
-			m_CameraList.begin(), 
-			m_CameraList.end(), 
-			[&](const Camera::WeakPtr& p) { return p.lock() == camera.lock(); }
+			m_CameraList.begin(),
+			m_CameraList.end(),
+			[&](const Camera::WeakPtr& p)
+			{
+				if (!p.expired()) {
+					return p.lock() == camera.lock();
+				}
+				return false;
+			}
 		);
 
 		if (newCameraIt != m_CameraList.end())
@@ -99,5 +106,24 @@ namespace GameEngine::Core
 		{
 			--m_CurrCameraIt;
 		}
+	}
+
+	CameraManager::CameraList::iterator CameraManager::FindValidCamera(CameraList::iterator startIt)
+	{
+		for (CameraList::iterator it = startIt; !m_CameraList.empty(); )
+		{
+			if (it == m_CameraList.end())
+			{
+				it = m_CameraList.begin();
+			}
+
+			if (!(it->expired()))
+			{
+				return it;
+			}
+			it = m_CameraList.erase(it);
+		}
+
+		return m_CameraList.end();
 	}
 }

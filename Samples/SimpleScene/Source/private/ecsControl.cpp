@@ -61,8 +61,10 @@ void RegisterEcsControlSystems(flecs::world& world)
 		camera->SetPosition(position);
 
 		ProcessButtonPress(controller, "CreateCamera",
-			[&]() { world.entity().set(CameraPtr{ cameraManager.ptr->CreateCamera() }); }
+			[&]() { world.entity().set(CameraPtr{ cameraManager.ptr->CreateCamera() })
+			       .set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) }); }
 						   );
+
 		ProcessButtonPress(controller, "NextCamera",
 						   [&]() { cameraManager.ptr->SwitchNextCamera(); }
 						   );
@@ -87,6 +89,20 @@ void RegisterEcsControlSystems(flecs::world& world)
 			{
 				vel.y = jump.value;
 			}
+		}
+	});
+
+	world.system<CameraPtr, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraPtr& cameraPtr, const ControllerPtr& controller)
+	{
+		static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
+
+		if (cameraManagerPtr->ptr->GetCamerasCount() > 1 &&
+			cameraPtr.ptr == cameraManagerPtr->ptr->GetActiveCamera())
+		{
+			ProcessButtonPress(controller, "DeleteCamera",
+							   [&]() { e.destruct(); }
+							   );
 		}
 	});
 

@@ -23,10 +23,11 @@ namespace GameEngine
             void SwitchNextCamera();
             void SwitchPrevCamera();
             void SetActiveCamera(Camera::WeakPtr camera);
+			size_t GetCamerasCount() const { return m_CameraList.size(); }
 
         private:
             void AddCamera(Camera::Ptr camera);
-            //CameraList::iterator FindValidFrom(CameraList::iterator startIt, int direction = 1);
+            CameraList::iterator FindValidCamera(CameraList::iterator startIt);
 
         private:
             CameraList m_CameraList;

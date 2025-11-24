@@ -30,7 +30,8 @@ void GameFramework::Init()
 		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
 
 	flecs::entity camera = m_World.entity()
-		.set(CameraPtr{ Core::g_CameraManager->CreateCamera() });
+		.set(CameraPtr{ Core::g_CameraManager->CreateCamera() })
+		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
 }
 
 void GameFramework::RegisterComponentsReflection()

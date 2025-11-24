@@ -32,6 +32,8 @@ namespace GameEngine
 				return KeyboardButton::E;
 			case 'C':
 				return KeyboardButton::C;
+			case 'F':
+				return KeyboardButton::F;
 			case 'T':
 				return KeyboardButton::T;
 			case 'R':
