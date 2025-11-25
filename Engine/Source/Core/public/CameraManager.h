@@ -1,8 +1,6 @@
 #pragma once
 
 #include <Core/export.h>
-#include <Matrix.h>
-#include <Vector.h>
 #include <Camera.h>
 
 namespace GameEngine
@@ -26,7 +24,7 @@ namespace GameEngine
 			size_t GetCamerasCount() const { return m_CameraList.size(); }
 
         private:
-            void AddCamera(Camera::Ptr camera);
+            void AddCamera(Camera::WeakPtr camera);
             CameraList::iterator FindValidCamera(CameraList::iterator startIt);
 
         private:

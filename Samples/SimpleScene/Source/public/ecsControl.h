@@ -5,6 +5,7 @@
 namespace GameEngine::Core
 {
 	class CameraManager;
+	class Camera;
 	class Controller;
 }
 
@@ -25,21 +26,20 @@ struct CameraManagerPtr
 
 struct CameraPtr
 {
-	GameEngine::Core::Camera::Ptr ptr = nullptr;
+	std::shared_ptr<GameEngine::Core::Camera> ptr = nullptr;
 };
 
 
-struct FixedCameraPtr
+struct DeltaFixedCamera
 {
 	float dx;
 	float dy;
 	float dz;
-	GameEngine::Core::Camera::Ptr ptr = nullptr;
 };
 
 struct SavedCameraPtr
 {
-	GameEngine::Core::Camera::WeakPtr ptr;
+	std::weak_ptr<GameEngine::Core::Camera> ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);

@@ -1,4 +1,3 @@
-#include <CameraManager.h>
 #include <DefaultGeometry.h>
 #include <ecsControl.h>
 #include <ecsMesh.h>
@@ -8,6 +7,7 @@
 #include <Input/Controller.h>
 #include <RenderObject.h>
 #include <GameWorld.h>
+#include <CameraManager.h>
 
 using namespace GameEngine;
 
@@ -24,8 +24,7 @@ void GameFramework::Init()
 
 	m_World.set(CameraManagerPtr{ Core::g_CameraManager.get() });
 
-	flecs::entity cameraManager = m_World.entity()
-		.set(CameraManagerPtr{ Core::g_CameraManager.get() })
+	flecs::entity cameraSavingSystem = m_World.entity()
 		.set(SavedCameraPtr{})
 		.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) });
 
@@ -78,11 +77,10 @@ void GameFramework::RegisterComponentsReflection()
 	m_World.component<JumpSpeed>()
 		.member<float>("value");
 
-	m_World.component<FixedCameraPtr>()
+	m_World.component<DeltaFixedCamera>()
 		.member<float>("dx")
 		.member<float>("dy")
-		.member<float>("dz")
-		.member<uint64_t>("ptr");
+		.member<float>("dz");
 }
 
 void GameFramework::RegisterSystems()

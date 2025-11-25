@@ -8,13 +8,15 @@ namespace GameEngine
 {
 	namespace Core
 	{
+		class CameraManager;
+
 		class CORE_API Camera final
 		{
+			friend class CameraManager;
+
 		public:
 			using Ptr = std::shared_ptr<Camera>;
 			using WeakPtr = std::weak_ptr<Camera>;
-
-			Camera() = default;
 
 		public:
 			Math::Matrix4x4f GetViewMatrix();
@@ -26,11 +28,12 @@ namespace GameEngine
 
 			void Rotate(float yaw, float pitch);
 
+		public: // wants private
+			Camera() = default;
+
 		private:
 			Math::Vector3f m_Position;
 			Math::Vector3f m_ViewDir;
 		};
-
-		extern CORE_API Camera* g_MainCamera;
 	}
 }

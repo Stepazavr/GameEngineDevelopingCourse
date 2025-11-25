@@ -27,56 +27,62 @@ static void ProcessButtonPress(const ControllerPtr& controller,
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<CameraManagerPtr, SavedCameraPtr, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraManagerPtr& cameraManager, SavedCameraPtr& savedCameraPtr, const ControllerPtr& controller)
+	world.system<CameraPtr, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraPtr& cameraPtr, const ControllerPtr& controller)
 	{
-		Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
+		static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
 
-		mouseMovement.dx *= 0.25 * Math::Constants::PI / 180.f;
-		mouseMovement.dy *= 0.25 * Math::Constants::PI / 180.f;
-
-		Core::Camera::Ptr camera = cameraManager.ptr->GetActiveCamera();
-
-		camera->Rotate(mouseMovement.dx, mouseMovement.dy);
-
-		Math::Vector3f currentMoveDir = Math::Vector3f::Zero();
-		if (controller.ptr->IsPressed("GoLeft"))
+		if (cameraPtr.ptr == cameraManagerPtr->ptr->GetActiveCamera())
 		{
-			currentMoveDir = currentMoveDir - camera->GetRightDir();
-		}
-		if (controller.ptr->IsPressed("GoRight"))
-		{
-			currentMoveDir = currentMoveDir + camera->GetRightDir();
-		}
-		if (controller.ptr->IsPressed("GoBack"))
-		{
-			currentMoveDir = currentMoveDir - camera->GetViewDir();
-		}
-		if (controller.ptr->IsPressed("GoForward"))
-		{
-			currentMoveDir = currentMoveDir + camera->GetViewDir();
-		}
-		float speed = 10.0f;
-		Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
-		camera->SetPosition(position);
+			Core::InputHandler::MouseMovevement mouseMovement = Core::InputHandler::GetInstance()->GetMouseMovement();
 
-		ProcessButtonPress(controller, "CreateCamera",
-			[&]() { world.entity().set(CameraPtr{ cameraManager.ptr->CreateCamera() })
-			       .set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) }); }
-						   );
+			mouseMovement.dx *= 0.25 * Math::Constants::PI / 180.f;
+			mouseMovement.dy *= 0.25 * Math::Constants::PI / 180.f;
 
-		ProcessButtonPress(controller, "NextCamera",
-						   [&]() { cameraManager.ptr->SwitchNextCamera(); }
-						   );
-		ProcessButtonPress(controller, "PrevCamera",
-						   [&]() { cameraManager.ptr->SwitchPrevCamera(); }
-						   );
-		ProcessButtonPress(controller, "SaveCamera",
-						   [&]() { savedCameraPtr.ptr = cameraManager.ptr->GetActiveCamera(); }
-						   );
-		ProcessButtonPress(controller, "LoadCamera",
-						   [&]() { cameraManager.ptr->SetActiveCamera(savedCameraPtr.ptr); }
-						   );
+			Core::Camera::Ptr camera = cameraPtr.ptr;
+
+			camera->Rotate(mouseMovement.dx, mouseMovement.dy);
+
+			Math::Vector3f currentMoveDir = Math::Vector3f::Zero();
+			if (controller.ptr->IsPressed("GoLeft"))
+			{
+				currentMoveDir = currentMoveDir - camera->GetRightDir();
+			}
+			if (controller.ptr->IsPressed("GoRight"))
+			{
+				currentMoveDir = currentMoveDir + camera->GetRightDir();
+			}
+			if (controller.ptr->IsPressed("GoBack"))
+			{
+				currentMoveDir = currentMoveDir - camera->GetViewDir();
+			}
+			if (controller.ptr->IsPressed("GoForward"))
+			{
+				currentMoveDir = currentMoveDir + camera->GetViewDir();
+			}
+			float speed = 10.0f;
+			Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
+			camera->SetPosition(position);
+
+			ProcessButtonPress(controller, "CreateCamera",
+				[&]() { world.entity().set(CameraPtr{ cameraManagerPtr->ptr->CreateCamera() })
+				.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) }); }
+			);
+
+			ProcessButtonPress(controller, "NextCamera",
+				[&]() { cameraManagerPtr->ptr->SwitchNextCamera(); }
+			);
+			ProcessButtonPress(controller, "PrevCamera",
+				[&]() { cameraManagerPtr->ptr->SwitchPrevCamera(); }
+			);
+
+			if (cameraManagerPtr->ptr->GetCamerasCount() > 1)
+			{
+				ProcessButtonPress(controller, "DeleteCamera",
+					[&]() { e.destruct(); }
+				);
+			}
+		}
 	});
 
 	world.system<const Position, Velocity, const ControllerPtr, const BouncePlane, const JumpSpeed>()
@@ -92,37 +98,37 @@ void RegisterEcsControlSystems(flecs::world& world)
 		}
 	});
 
-	world.system<CameraPtr, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraPtr& cameraPtr, const ControllerPtr& controller)
+	world.system<SavedCameraPtr, const ControllerPtr>()
+		.each([&](flecs::entity e, SavedCameraPtr& savedCameraPtr, const ControllerPtr& controller)
 	{
 		static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
 
-		if (cameraManagerPtr->ptr->GetCamerasCount() > 1 &&
-			cameraPtr.ptr == cameraManagerPtr->ptr->GetActiveCamera())
+		ProcessButtonPress(controller, "SaveCamera",
+			[&]() { savedCameraPtr.ptr = cameraManagerPtr->ptr->GetActiveCamera(); }
+		);
+		ProcessButtonPress(controller, "LoadCamera",
+			[&]() { cameraManagerPtr->ptr->SetActiveCamera(savedCameraPtr.ptr); }
+		);
+	});
+
+	world.system<DeltaFixedCamera>()
+		.each([&](flecs::entity e, DeltaFixedCamera& delta)
+	{
+		static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
+
+		if (!e.has(world.lookup("CameraPtr").id()))
 		{
-			ProcessButtonPress(controller, "DeleteCamera",
-							   [&]() { e.destruct(); }
-							   );
+			e.set(CameraPtr{ cameraManagerPtr->ptr->CreateCamera() });
 		}
 	});
 
-	world.system<FixedCameraPtr>()
-		.each([&](flecs::entity e, FixedCameraPtr& cameraPtr)
+	world.system<DeltaFixedCamera, CameraPtr, const Position>()
+		.each([&](DeltaFixedCamera& delta, CameraPtr& cameraPtr, const Position& pos)
 	{
-				if (!cameraPtr.ptr)
-				{
-					static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
-					cameraPtr.ptr = cameraManagerPtr->ptr->CreateCamera();
-				}
+		if (cameraPtr.ptr)
+		{
+			cameraPtr.ptr->SetPosition(Math::Vector3f(pos.x + delta.dx, pos.y + delta.dy, pos.z + delta.dz));
+		}
 	});
-
-	world.system<FixedCameraPtr, const Position>()
-		.each([&](FixedCameraPtr& cameraPtr, const Position& pos)
-			{
-				if (cameraPtr.ptr)
-				{
-					cameraPtr.ptr->SetPosition(Math::Vector3f(pos.x + cameraPtr.dx, pos.y + cameraPtr.dy, pos.z + cameraPtr.dz));
-				}
-			});
 }
 

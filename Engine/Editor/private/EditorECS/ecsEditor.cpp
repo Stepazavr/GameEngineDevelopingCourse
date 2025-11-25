@@ -25,10 +25,14 @@ namespace GameEngine::EntitySystem::EditorECS
 					}
 				});
 
-		world.system<CameraManagerPtr>()
-			.each([&](flecs::entity e, CameraManagerPtr& cameraManager)
+		world.system<CameraPtr>()
+			.each([&](flecs::entity e, CameraPtr& cameraPtr)
 				{
-					if (!Core::g_MainWindowsApplication->IsMouseCaptured() || !Core::g_MainWindowsApplication->IsFocused()) [[unlikely]]
+					static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
+
+					if (cameraPtr.ptr != cameraManagerPtr->ptr->GetActiveCamera() ||
+						!Core::g_MainWindowsApplication->IsMouseCaptured() || 
+						!Core::g_MainWindowsApplication->IsFocused()) [[unlikely]]
 					{
 						return;
 					}
@@ -38,7 +42,7 @@ namespace GameEngine::EntitySystem::EditorECS
 					mouseMovement.dx *= 0.25 * (Math::Constants::PI / 180.f);
 					mouseMovement.dy *= 0.25 * (Math::Constants::PI / 180.f);
 
-					Core::Camera::Ptr camera = cameraManager.ptr->GetActiveCamera();
+					Core::Camera::Ptr camera = cameraManagerPtr->ptr->GetActiveCamera();
 
 					camera->Rotate(mouseMovement.dx, mouseMovement.dy);
 

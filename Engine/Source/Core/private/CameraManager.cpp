@@ -10,27 +10,20 @@ namespace GameEngine::Core
 		newCamera->SetPosition(startCameraPosition);
 		newCamera->SetViewDir(startCameraViewDir);
 
-		AddCamera(newCamera);
+		AddCamera(Camera::WeakPtr(newCamera));
 		return newCamera;
 	}
 
-	void CameraManager::AddCamera(Camera::Ptr camera)
+	void CameraManager::AddCamera(Camera::WeakPtr camera)
 	{
-		if (m_CameraList.empty())
-		{
-			m_CameraList.push_back(camera);
-			m_CurrCameraIt = m_CameraList.begin();
-			return;
-		}
-
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
-			m_CameraList.push_back(static_cast<Camera::WeakPtr>(camera));
+			m_CameraList.push_back(camera);
 			m_CurrCameraIt = std::prev(m_CameraList.end());
 			return;
 		}
 
-		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), static_cast<Camera::WeakPtr>(camera));
+		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), camera);
 	}
 
 	Camera::Ptr CameraManager::GetActiveCamera()
@@ -59,10 +52,7 @@ namespace GameEngine::Core
 			}
 		);
 
-		if (newCameraIt != m_CameraList.end())
-		{
-			m_CurrCameraIt = newCameraIt;
-		}
+		m_CurrCameraIt = newCameraIt;
 	}
 
 	void CameraManager::SwitchNextCamera()
@@ -72,13 +62,8 @@ namespace GameEngine::Core
 			return;
 		}
 
-		if (m_CurrCameraIt == m_CameraList.end())
-		{
-			m_CurrCameraIt = m_CameraList.begin();
-			return;
-		}
-
 		++m_CurrCameraIt;
+
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
 			m_CurrCameraIt = m_CameraList.begin();
@@ -89,12 +74,6 @@ namespace GameEngine::Core
 	{
 		if (m_CameraList.empty())
 		{
-			return;
-		}
-
-		if (m_CurrCameraIt == m_CameraList.end())
-		{
-			m_CurrCameraIt = std::prev(m_CameraList.end());
 			return;
 		}
 
