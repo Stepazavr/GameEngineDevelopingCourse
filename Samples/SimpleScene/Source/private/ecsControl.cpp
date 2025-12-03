@@ -79,7 +79,7 @@ void RegisterEcsControlSystems(flecs::world& world)
 			if (cameraManagerPtr->ptr->GetCamerasCount() > 1)
 			{
 				ProcessButtonPress(controller, "DeleteCamera",
-					[&]() { e.destruct(); }
+					[&]() { cameraManagerPtr->ptr->DeleteCamera(camera); e.destruct(); }
 				);
 			}
 		}

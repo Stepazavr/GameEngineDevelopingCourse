@@ -23,6 +23,7 @@ namespace GameEngine
 
         public:
             Camera* CreateCamera();
+            void DeleteCamera(Camera* camera);
             Camera* GetActiveCamera();
             void SwitchNextCamera();
             void SwitchPrevCamera();

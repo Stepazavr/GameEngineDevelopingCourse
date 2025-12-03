@@ -83,4 +83,22 @@ namespace GameEngine::Core
 		}
 	}
 
+	void CameraManager::DeleteCamera(Camera* camera)
+	{
+		CameraList::iterator forDelCameraIt = std::find_if(
+			m_CameraList.begin(),
+			m_CameraList.end(),
+			[&](const Camera::Ptr& p)
+			{
+				return p.get() == camera;
+			}
+		);
+
+		if (m_CurrCameraIt == forDelCameraIt)
+		{
+			SwitchNextCamera();
+		}
+		m_CameraList.erase(forDelCameraIt);
+	}
+
 }
