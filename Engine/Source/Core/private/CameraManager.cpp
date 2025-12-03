@@ -4,38 +4,37 @@ namespace GameEngine::Core
 {
 	std::unique_ptr<CameraManager> g_CameraManager = nullptr;
 
-	Camera::Ptr CameraManager::CreateCamera()
+	Camera* CameraManager::CreateCamera()
 	{
-		Camera::Ptr newCamera = std::make_shared<Camera>();
+		Camera* newCamera = new Camera();
 		newCamera->SetPosition(startCameraPosition);
 		newCamera->SetViewDir(startCameraViewDir);
 
-		AddCamera(Camera::WeakPtr(newCamera));
+		AddCamera(newCamera);
 		return newCamera;
 	}
 
-	void CameraManager::AddCamera(Camera::WeakPtr camera)
+	void CameraManager::AddCamera(Camera* camera)
 	{
 		if (m_CurrCameraIt == m_CameraList.end())
 		{
-			m_CameraList.push_back(camera);
+			m_CameraList.push_back(std::unique_ptr<Camera>(camera));
 			m_CurrCameraIt = std::prev(m_CameraList.end());
 			return;
 		}
 
-		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), camera);
+		m_CurrCameraIt = m_CameraList.insert(std::next(m_CurrCameraIt), std::unique_ptr<Camera>(camera));
 	}
 
-	Camera::Ptr CameraManager::GetActiveCamera()
+	Camera* CameraManager::GetActiveCamera()
 	{
-		m_CurrCameraIt = FindValidCamera(m_CurrCameraIt);
 		assert(m_CurrCameraIt != m_CameraList.end());
-		return m_CurrCameraIt->lock();
+		return m_CurrCameraIt->get();
 	}
 
-	void CameraManager::SetActiveCamera(Camera::WeakPtr camera)
+	void CameraManager::SetActiveCamera(Camera* camera)
 	{
-		if (camera.expired())
+		if (!camera)
 		{
 			return;
 		}
@@ -43,12 +42,9 @@ namespace GameEngine::Core
 		CameraList::iterator newCameraIt = std::find_if(
 			m_CameraList.begin(),
 			m_CameraList.end(),
-			[&](const Camera::WeakPtr& p)
+			[&](const Camera::Ptr& p)
 			{
-				if (!p.expired()) {
-					return p.lock() == camera.lock();
-				}
-				return false;
+				return p.get() == camera;
 			}
 		);
 
@@ -87,22 +83,4 @@ namespace GameEngine::Core
 		}
 	}
 
-	CameraManager::CameraList::iterator CameraManager::FindValidCamera(CameraList::iterator startIt)
-	{
-		for (CameraList::iterator it = startIt; !m_CameraList.empty(); )
-		{
-			if (it == m_CameraList.end())
-			{
-				it = m_CameraList.begin();
-			}
-
-			if (!(it->expired()))
-			{
-				return it;
-			}
-			it = m_CameraList.erase(it);
-		}
-
-		return m_CameraList.end();
-	}
 }

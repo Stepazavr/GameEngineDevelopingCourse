@@ -10,21 +10,27 @@ namespace GameEngine
         class CORE_API CameraManager final
         {
         public:
-            using CameraList = std::list<Camera::WeakPtr>;
+            using CameraList = std::list<Camera::Ptr>;
 
             CameraManager()
-                : m_CurrCameraIt(m_CameraList.end())
-            {}
+                : m_CurrCameraIt(m_CameraList.end()) {}
 
-            Camera::Ptr CreateCamera();
-            Camera::Ptr GetActiveCamera();
+            CameraManager(const CameraManager&) = delete;
+            CameraManager& operator=(const CameraManager&) = delete;
+
+            CameraManager(CameraManager&&) = default;
+            CameraManager& operator=(CameraManager&&) = default;
+
+        public:
+            Camera* CreateCamera();
+            Camera* GetActiveCamera();
             void SwitchNextCamera();
             void SwitchPrevCamera();
-            void SetActiveCamera(Camera::WeakPtr camera);
+            void SetActiveCamera(Camera* camera);
 			size_t GetCamerasCount() const { return m_CameraList.size(); }
 
         private:
-            void AddCamera(Camera::WeakPtr camera);
+            void AddCamera(Camera* camera);
             CameraList::iterator FindValidCamera(CameraList::iterator startIt);
 
         private:

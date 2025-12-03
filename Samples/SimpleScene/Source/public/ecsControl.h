@@ -26,7 +26,7 @@ struct CameraManagerPtr
 
 struct CameraPtr
 {
-	std::shared_ptr<GameEngine::Core::Camera> ptr = nullptr;
+	GameEngine::Core::Camera* ptr = nullptr;
 };
 
 
@@ -39,7 +39,7 @@ struct DeltaFixedCamera
 
 struct SavedCameraPtr
 {
-	std::weak_ptr<GameEngine::Core::Camera> ptr;
+	GameEngine::Core::Camera* ptr;
 };
 
 void RegisterEcsControlSystems(flecs::world& world);

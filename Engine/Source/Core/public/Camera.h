@@ -11,8 +11,7 @@ namespace GameEngine
 		class CORE_API Camera final
 		{
 		public:
-			using Ptr = std::shared_ptr<Camera>;
-			using WeakPtr = std::weak_ptr<Camera>;
+			using Ptr = std::unique_ptr<Camera>;
 
 			Camera() = default;
 

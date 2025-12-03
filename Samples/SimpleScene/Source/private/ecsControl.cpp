@@ -39,7 +39,7 @@ void RegisterEcsControlSystems(flecs::world& world)
 			mouseMovement.dx *= 0.25 * Math::Constants::PI / 180.f;
 			mouseMovement.dy *= 0.25 * Math::Constants::PI / 180.f;
 
-			Core::Camera::Ptr camera = cameraPtr.ptr;
+			Core::Camera* camera = cameraPtr.ptr;
 
 			camera->Rotate(mouseMovement.dx, mouseMovement.dy);
 
