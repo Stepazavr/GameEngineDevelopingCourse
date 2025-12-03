@@ -42,7 +42,7 @@ namespace GameEngine::EntitySystem::EditorECS
 					mouseMovement.dx *= 0.25 * (Math::Constants::PI / 180.f);
 					mouseMovement.dy *= 0.25 * (Math::Constants::PI / 180.f);
 
-					Core::Camera::Ptr camera = cameraManagerPtr->ptr->GetActiveCamera();
+					Core::Camera* camera = cameraManagerPtr->ptr->GetActiveCamera();
 
 					camera->Rotate(mouseMovement.dx, mouseMovement.dy);
 
