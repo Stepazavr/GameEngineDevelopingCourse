@@ -11,6 +11,7 @@ namespace GameEngine
         {
         public:
             using CameraList = std::list<Camera::Ptr>;
+            using It = CameraList::iterator;
 
             CameraManager()
                 : m_CurrCameraIt(m_CameraList.end()) {}
@@ -32,11 +33,11 @@ namespace GameEngine
 
         private:
             void AddCamera(Camera* camera);
-            CameraList::iterator FindValidCamera(CameraList::iterator startIt);
+            It FindIterator(Camera* camera);
 
         private:
             CameraList m_CameraList;
-            CameraList::iterator m_CurrCameraIt;
+            It m_CurrCameraIt;
 
             inline static Math::Vector3f startCameraPosition = Math::Vector3f(0.0f, 12.0f, -10.0f);
             inline static Math::Vector3f startCameraViewDir = Math::Vector3f(0.0f, -6.0f, 12.0f);

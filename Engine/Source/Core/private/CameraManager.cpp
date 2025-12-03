@@ -39,14 +39,7 @@ namespace GameEngine::Core
 			return;
 		}
 
-		CameraList::iterator newCameraIt = std::find_if(
-			m_CameraList.begin(),
-			m_CameraList.end(),
-			[&](const Camera::Ptr& p)
-			{
-				return p.get() == camera;
-			}
-		);
+		It newCameraIt = FindIterator(camera);
 
 		m_CurrCameraIt = newCameraIt;
 	}
@@ -85,14 +78,7 @@ namespace GameEngine::Core
 
 	void CameraManager::DeleteCamera(Camera* camera)
 	{
-		CameraList::iterator forDelCameraIt = std::find_if(
-			m_CameraList.begin(),
-			m_CameraList.end(),
-			[&](const Camera::Ptr& p)
-			{
-				return p.get() == camera;
-			}
-		);
+		It forDelCameraIt = FindIterator(camera);
 
 		if (m_CurrCameraIt == forDelCameraIt)
 		{
@@ -101,4 +87,16 @@ namespace GameEngine::Core
 		m_CameraList.erase(forDelCameraIt);
 	}
 
+	CameraManager::It CameraManager::FindIterator(Camera* camera)
+	{
+		It it = std::find_if(
+			m_CameraList.begin(),
+			m_CameraList.end(),
+			[&](const Camera::Ptr& p)
+			{
+				return p.get() == camera;
+			}
+		);
+		return it;
+	}
 }
