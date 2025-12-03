@@ -34,12 +34,12 @@ namespace GameEngine::Core
 
 	void CameraManager::SetActiveCamera(Camera* camera)
 	{
-		if (!camera)
+		It newCameraIt = FindIterator(camera);
+
+		if (newCameraIt == m_CameraList.end())
 		{
 			return;
 		}
-
-		It newCameraIt = FindIterator(camera);
 
 		m_CurrCameraIt = newCameraIt;
 	}
@@ -80,9 +80,21 @@ namespace GameEngine::Core
 	{
 		It forDelCameraIt = FindIterator(camera);
 
+		if (forDelCameraIt == m_CameraList.end())
+		{
+			return;
+		}
+
 		if (m_CurrCameraIt == forDelCameraIt)
 		{
-			SwitchNextCamera();
+			if (GetCamerasCount() == 1)
+			{
+				m_CurrCameraIt = m_CameraList.end();
+			}
+			else
+			{
+				SwitchNextCamera();
+			}
 		}
 		m_CameraList.erase(forDelCameraIt);
 	}
