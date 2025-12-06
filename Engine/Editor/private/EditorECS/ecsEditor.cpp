@@ -25,8 +25,8 @@ namespace GameEngine::EntitySystem::EditorECS
 					}
 				});
 
-		world.system<CameraPtr>()
-			.each([&](flecs::entity e, CameraPtr& cameraPtr)
+		world.system<CameraPtr, const Speed>()
+			.each([&](flecs::entity e, CameraPtr& cameraPtr, const Speed& speed)
 				{
 					static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
 
@@ -63,8 +63,8 @@ namespace GameEngine::EntitySystem::EditorECS
 					{
 						currentMoveDir = currentMoveDir + camera->GetViewDir();
 					}
-					float speed = 10.0f;
-					Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
+
+					Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed.value * world.delta_time();
 					camera->SetPosition(position);
 				});
 	}

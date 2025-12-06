@@ -27,8 +27,8 @@ static void ProcessButtonPress(const ControllerPtr& controller,
 
 void RegisterEcsControlSystems(flecs::world& world)
 {
-	world.system<CameraPtr, const ControllerPtr>()
-		.each([&](flecs::entity e, CameraPtr& cameraPtr, const ControllerPtr& controller)
+	world.system<CameraPtr, const Speed, const ControllerPtr>()
+		.each([&](flecs::entity e, CameraPtr& cameraPtr, const Speed& speed, const ControllerPtr& controller)
 	{
 		static const CameraManagerPtr* cameraManagerPtr = world.get<CameraManagerPtr>();
 
@@ -60,12 +60,13 @@ void RegisterEcsControlSystems(flecs::world& world)
 			{
 				currentMoveDir = currentMoveDir + camera->GetViewDir();
 			}
-			float speed = 10.0f;
-			Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed * world.delta_time();
+
+			Math::Vector3f position = camera->GetPosition() + currentMoveDir.Normalized() * speed.value * world.delta_time();
 			camera->SetPosition(position);
 
 			ProcessButtonPress(controller, "CreateCamera",
 				[&]() { world.entity().set(CameraPtr{ cameraManagerPtr->ptr->CreateCamera() })
+				.set(Speed{ speed.value })
 				.set(ControllerPtr{ new Core::Controller(Core::g_FileSystem->GetConfigPath("Input_default.ini")) }); }
 			);
 

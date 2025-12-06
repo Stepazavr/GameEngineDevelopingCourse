@@ -32,7 +32,8 @@ namespace GameEngine
 		m_EntityManager->GetWorld().set(EntitySystem::EditorECS::CameraManagerPtr{ Core::g_CameraManager.get() });
 
 		flecs::entity camera = m_EntityManager->GetWorld().entity()
-			.set(EntitySystem::EditorECS::CameraPtr{ Core::g_CameraManager->CreateCamera() });
+			.set(EntitySystem::EditorECS::CameraPtr{ Core::g_CameraManager->CreateCamera() })
+			.set(EntitySystem::EditorECS::Speed{ 10.f });
 
 		EntitySystem::EditorECS::RegisterEditorEcsControlSystems(m_EntityManager->GetWorld());
 
